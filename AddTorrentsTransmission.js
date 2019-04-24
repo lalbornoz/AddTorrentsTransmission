@@ -5,7 +5,7 @@
 // @match         https://*.iptorrents.com/*
 // @match         https://*.karagarga.in/*
 // @name          Add torrents to Transmission via RPC
-// @version       1.2
+// @version       1.3
 // ==/UserScript==
 
 /*
@@ -34,10 +34,12 @@ function cbClick(e) {
           GM.xmlHttpRequest({
             method: "HEAD",
             onload: function (r_) {cbResponse(r.response, r_)},
+            synchronous: false,
             url: transmissionRpcUrl
           });
         }
       },
+      synchronous: false,
       url: this.href
     });
   }
@@ -67,6 +69,7 @@ function cbResponse(torrent, r) {
     headers: {"Accept": "text/xml", "X-Transmission-Session-Id": sessionId},
     method: "POST",
     onload: cbResponsePost,
+    synchronous: false,
     url: transmissionRpcUrl
   });
 }
