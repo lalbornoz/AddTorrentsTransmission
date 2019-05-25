@@ -5,7 +5,7 @@
 // @match         https://*.iptorrents.com/*
 // @match         https://*.karagarga.in/*
 // @name          Add torrents to Transmission via RPC
-// @version       1.3
+// @version       1.4
 // ==/UserScript==
 
 /*
@@ -50,7 +50,7 @@ function cbClick(e) {
 // {{{ function cbResponse(torrent, r)
 function cbResponse(torrent, r) {
   let args = {
-    arguments: {metainfo: btoa(String.fromCharCode(...new Uint8Array(torrent)))},
+    arguments: {metainfo: JavaScriptIsFuckingWorthless(torrent)},
     method: "torrent-add"};
   let sessionId = r.responseHeaders.split("\n").reduce(
     (acc, rh) => {
@@ -88,6 +88,14 @@ function cbResponsePost(r) {
   } else {
     alert(r_.result);
   }
+}
+// }}}
+// {{{ function JavaScriptIsFuckingWorthless()
+function JavaScriptIsFuckingWorthless(FuckYou) {
+  return btoa(new Uint8Array(FuckYou).reduce(
+    function(data, byte) {
+      return data + String.fromCharCode(byte);
+    }, ""));
 }
 // }}}
 // {{{ function logDebug(msg)
