@@ -1,0 +1,70 @@
+Partially based on <https://dev.deluge-torrent.org/ticket/2320>.
+
+--- /usr/lib/python3/dist-packages/deluge/ui/web/json_api.py.dist	2019-06-12 23:17:45.000000000 +0200
++++ /usr/lib/python3/dist-packages/deluge/ui/web/json_api.py	2020-03-22 13:47:17.410151211 +0100
+@@ -20,6 +20,7 @@
+ 
+ from twisted.internet import defer, reactor
+ from twisted.internet.defer import Deferred, DeferredList
++from twisted.python.failure import Failure
+ from twisted.web import http, resource, server
+ 
+ from deluge import component, httpdownloader
+@@ -176,7 +177,19 @@
+         Sends the response of any rpc calls back to the json-rpc client.
+         """
+         response['result'] = result
+-        return self._send_response(request, response)
++        try:
++            return self._send_response(request, response)
++        except TypeError:
++            resultObject = response['result'][0][1]
++            if type(resultObject) == Failure:
++                reason = resultObject.getErrorMessage()
++                response['result'] = [(False, reason,)]
++                log.error(reason)
++                response['error'] = {
++                    'message': '%s' % (reason),
++                    'code': 4,
++                }
++            return self._send_response(request, response)
+ 
+     def _on_rpc_request_failed(self, reason, response, request):
+         """
+@@ -724,7 +737,8 @@
+         Add torrents by file
+ 
+         :param torrents: A list of dictionaries containing the torrent \
+-            path and torrent options to add with.
++            path, torrent data and torrent options to add with. Torrent data \
++            is optional and must be encoded with base64.
+         :type torrents: list
+ 
+         ::
+@@ -748,8 +762,12 @@
+                 deferreds.append(d)
+             else:
+                 filename = os.path.basename(torrent['path'])
+-                with open(torrent['path'], 'rb') as _file:
+-                    fdump = b64encode(_file.read())
++                if not os.path.exists(filename):
++                    mode = 'wb'
++                else:
++                    mode = 'rb'
++                with open(torrent['path'], mode) as _file:
++                    fdump = torrent.pop("data", None) or base64.encodestring(open(torrent["path"], "rb").read())
+                 log.info(
+                     'Adding torrent from file `%s` with options `%r`',
+                     filename,
+--- /usr/lib/python3/dist-packages/deluge/ui/client.py.dist	2019-06-12 23:17:45.000000000 +0200
++++ /usr/lib/python3/dist-packages/deluge/ui/client.py	2020-03-22 13:47:17.950124518 +0100
+@@ -166,7 +166,8 @@
+ 
+                 if not isinstance(exception, error._ClientSideRecreateError):
+                     # Let's log these as errors
+-                    log.error(msg)
++                    #log.error(msg)
++                    pass
+                 else:
+                     # The rest just get's logged in debug level, just to log
+                     # what's happening
