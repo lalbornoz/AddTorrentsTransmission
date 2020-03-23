@@ -4,10 +4,11 @@
 // @grant         GM.xmlHttpRequest
 // @homepageURL   https://github.com/lalbornoz/AddTorrentsDelugeTransmission
 // @include       *
+// @license       MIT
 // @name          Add torrents to Deluge via Web API
 // @namespace     https://greasyfork.org/users/467795
 // @supportURL    https://github.com/lalbornoz/AddTorrentsDelugeTransmission
-// @version       1.1
+// @version       1.2
 // ==/UserScript==
 
 /*
