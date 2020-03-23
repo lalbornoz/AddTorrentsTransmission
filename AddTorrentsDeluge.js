@@ -27,7 +27,6 @@ let delugeWebUrl = "protocol://hostname[:port]/deluge";
 let linkOpacity = 0.5;
 
 // {{{ Module variables
-let delugeCookies = "";
 let delugeRequestId = 0;
 // }}}
 
@@ -40,19 +39,13 @@ function basename(url) {
 // {{{ function delugeWebRequest(method, onLoadCb, params)
 function delugeWebRequest(method, onLoadCb, params) {
   let headers = {"Content-type": "application/json"};
-  if (delugeCookies.length > 0) {
-    headers["Cookie"] = delugeCookies;
-  };
   let paramsJson = JSON.stringify(params);
   let xhrParams = {
+    anonymous:    false,
     data:         '\{"method":"' + method + '","params":' + paramsJson + ',"id":' + (delugeRequestId++) + '\}',
     headers:      headers,
     method:       "POST",
     onload:       function (xhr) {
-                    let headersDict = parseHttpHeaders(xhr.responseHeaders);
-                    if ("Set-Cookie" in headersDict) {
-                      delugeCookies = headersDict["Set-Cookie"];
-                    };
                     let response = JSON.parse(xhr.responseText);
                     if (response.error === null) {
                       logDebug("[Deluge] Asynchronous `" + method
@@ -61,7 +54,10 @@ function delugeWebRequest(method, onLoadCb, params) {
                     } else {
                       logDebug("[Deluge] Asynchronous `" + method
                                + "' Web API request failed: " + response.error.message
-                               + "(code " + response.error.code.toString() + ")");
+                               + " (code " + response.error.code.toString() + ")");
+                      alert("[Deluge] Asynchronous `" + method
+                            + "' Web API request failed: " + response.error.message
+                            + " (code " + response.error.code.toString() + ")");
                     };
                     onLoadCb(response, xhr);
                   },
@@ -103,21 +99,6 @@ function matchHostDict(dict, host) {
   } else {
     return dict[""];
   }
-};
-// }}}
-// {{{ function parseHttpHeaders(headers)
-function parseHttpHeaders(headers) {
-  let headersDict = {};
-  headers.split("\r\n").forEach(
-    line => {
-      let [k, v] = line.split(": ");
-      if (k.toLowerCase() === "set-cookie") {
-        v = v.split("\n"); headersDict[k] = v[v.length - 1];
-      } else {
-        headersDict[k] = v;
-      };
-    });
-  return headersDict;
 };
 // }}}
 
@@ -206,10 +187,7 @@ function cbWebGetConfigResponse(response, torrent, torrentDownloadDir, torrentNa
 function cbWebAddTorrentsResponse(response, torrent, torrentDownloadDir, torrentName, torrentUrl, torrentUrlHost, xhr) {
   if (response.error === null) {
     logDebug("[Deluge] Torrent `" + torrentName + "' added successfully.");
-    alert("Torrent `" + torrentName + "' added successfully.");
-  } else {
-    logDebug("[Deluge] Failed to add torrent `" + torrentName + "' : " + response.error.message + " (code " + response.error.code + ")");
-    alert("Failed to add torrent `" + torrentName + "' : " + response.error.message + " (code " + response.error.code + ")");
+    alert("[Deluge] Torrent `" + torrentName + "' added successfully.");
   };
 };
 // }}}
