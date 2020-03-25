@@ -1,6 +1,6 @@
 # AddTorrentsDeluge.js
 
-Add torrents to Deluge via Web API (requires patched deluge-web[\[1](#r1)]
+Add torrents to Deluge via Web API (requires patched deluge-web&lbrack;[1](https://raw.githubusercontent.com/lalbornoz/AddTorrentsDelugeTransmission/master/deluge-2.0.3%2BAddTorrentsDeluge.patch)&rbrack;
 owing to missing functionality & unfixed bugs and ViolentMonkey due to 3rd-party
 cookies)  
   
