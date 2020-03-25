@@ -1,6 +1,17 @@
-Add torrents to Deluge via Web API (requires patched deluge-web[\[1](#r1)]
-owing to missing functionality & unfixed bugs and ViolentMonkey)
+# AddTorrentsDeluge.js
 
+Add torrents to Deluge via Web API (requires patched deluge-web[\[1](#r1)]
+owing to missing functionality & unfixed bugs and ViolentMonkey due to 3rd-party
+cookies)  
+  
+Eligible torrent links will have their opacity adjusted as per ``linkOpacity``
+and queued on-click; the ``<Ctrl>`` key held on-click inhibits script processing
+of torrent links to allow downloading a torrent file.
+  
+This script requires in-script configuration prior to usage. Consult the
+following table and set, at minimum, ``delugeDownloadDir``, ``delugeHostId``,
+``delugeTorrentDirectory``, ``delugeWebPassword``, and ``delugeWebUrl``.  
+  
 | Variable name          | Default value                       | Description                                                                                 |
 | ---------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------- |
 | debug                  | false                               | Print debugging messages to Web console                                                     |
@@ -12,6 +23,26 @@ owing to missing functionality & unfixed bugs and ViolentMonkey)
 | delugeWebPassword      |                                     | Deluge host web password                                                                    |
 | delugeWebUrl           | protocol://hostname[:port]/deluge   | URL to deluge-web                                                                           |
 | linkOpacity            | 0.5                                 | Opacity of torrent links eligible for one-click queueing                                    |
+
+# AddTorrentsTransmission.js
+
+Add torrents to Transmission via RPC API
+  
+Eligible torrent links will have their opacity adjusted as per ``linkOpacity``
+and queued on-click; the ``<Ctrl>`` key held on-click inhibits script processing
+of torrent links to allow downloading a torrent file.
+  
+This script requires in-script configuration prior to usage. Consult the
+following table and set, at minimum, ``downloadDir``, ``transmissionRpcAuth``,
+and ``transmissionRpcUrl``.  
+  
+| Variable name       | Default value                                      | Description                                                                    |
+| ------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------ |
+| debug               | false                                              | Print debugging messages to Web console                                        |
+| downloadDir         | ``"domain.tld": "/absolute/path/to/download/dir"`` | Ordered dictionary of domain name keys mapping to download directory pathnames |
+| transmissionRpcAuth |                                                    | Double-colon (``:``) separated Transmission RPC username and password          |
+| transmissionRpcUrl  | https://hostname:port/rpc                          | URL to Transmission RPC                                                        |
+| linkOpacity         | 0.5                                                | Opacity of torrent links eligible for one-click queueing                       |
 
 # References
 
