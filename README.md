@@ -36,13 +36,13 @@ This script requires in-script configuration prior to usage. Consult the
 following table and set, at minimum, ``downloadDir``, ``transmissionRpcAuth``,
 and ``transmissionRpcUrl``.  
   
-| Variable name       | Default value                                      | Description                                                                    |
-| ------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------ |
-| debug               | false                                              | Print debugging messages to Web console                                        |
-| downloadDir         | ``"domain.tld": "/absolute/path/to/download/dir"`` | Ordered dictionary of domain name keys mapping to download directory pathnames |
-| transmissionRpcAuth |                                                    | Double-colon (``:``) separated Transmission RPC username and password          |
-| transmissionRpcUrl  | https://hostname:port/rpc                          | URL to Transmission RPC                                                        |
-| linkOpacity         | 0.5                                                | Opacity of torrent links eligible for one-click queueing                       |
+| Variable name       | Default value                            | Description                                                                    |
+| ------------------- | ---------------------------------------- | ------------------------------------------------------------------------------ |
+| debug               | false                                    | Print debugging messages to Web console                                        |
+| downloadDir         | ``"": "/absolute/path/to/download/dir"`` | Ordered dictionary of domain name keys mapping to download directory pathnames |
+| transmissionRpcAuth |                                          | Double-colon (``:``) separated Transmission RPC username and password          |
+| transmissionRpcUrl  | https://hostname:port/rpc                | URL to Transmission RPC                                                        |
+| linkOpacity         | 0.5                                      | Opacity of torrent links eligible for one-click queueing                       |
 
 # References
 

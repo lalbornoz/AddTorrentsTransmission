@@ -1,11 +1,13 @@
 // ==UserScript==
-// @description   Add torrents to Transmission via RPC
+// @description   Add torrents to Transmission via RPC interface
 // @grant         GM.xmlHttpRequest
 // @icon          https://raw.githubusercontent.com/transmission/transmission-icons/master/Transmission-Icon-32.png
-// @match         https://*.iptorrents.com/*
-// @match         https://*.karagarga.in/*
+// @include       *
+// @license       MIT
 // @name          Add torrents to Transmission via RPC
-// @version       1.4
+// @namespace     https://greasyfork.org/users/467795
+// @supportURL    https://github.com/lalbornoz/AddTorrentsDelugeTransmission
+// @version       1.5
 // ==/UserScript==
 
 /*
@@ -13,7 +15,7 @@
  */
 var debug = false;
 var downloadDir = {
-  "domain.tld": "/absolute/path/to/download/dir"
+  "": "/absolute/path/to/download/dir"
 };
 var transmissionRpcAuth = "username:password";
 var transmissionRpcUrl = "https://hostname:port/rpc";
@@ -23,15 +25,15 @@ var linkOpacity = 0.5;
 function cbClick(e) {
   if (!e.ctrlKey) {
     e.stopPropagation(); e.preventDefault();
-    logDebug("[Transmission] Sending GET request for " + this.href);
+    logDebug("Sending GET request for " + this.href);
     GM.xmlHttpRequest({
       method: "GET",
       responseType : "arraybuffer",
       onreadystatechange: function (r) {
-        logDebug("[Transmission] GET request completed, readyState=" + r.readyState + " status=" + r.status);
+        logDebug("GET request completed, readyState=" + r.readyState + " status=" + r.status);
         if ((r.readyState === 4)
         &&  (r.status === 200)) {
-          logDebug("[Transmission] Sending HEAD request to " + transmissionRpcUrl);
+          logDebug("Sending HEAD request to " + transmissionRpcUrl);
           GM.xmlHttpRequest({
             headers: {"Authorization": ("Basic " + btoa(transmissionRpcAuth))},
             method: "HEAD",
@@ -61,11 +63,12 @@ function cbResponse(torrent, r) {
         return acc;
       }
     }, "");
-
-  if (document.domain in downloadDir) {
-    args.arguments["download-dir"] = downloadDir[document.domain];
-  }
-  logDebug("[Transmission] HEAD request completed, sending POST request");
+  let torrentDownloadDir = "";
+  if ((torrentDownloadDir = matchHostDict(downloadDir, document.domain)) === null) {
+    torrentDownloadDir = downloadDir[""];
+  };
+  args.arguments["download-dir"] = torrentDownloadDir;
+  logDebug("HEAD request completed, sending POST request");
   GM.xmlHttpRequest({
     data: JSON.stringify(args),
     headers: {"Accept": "text/xml", "X-Transmission-Session-Id": sessionId,
@@ -79,14 +82,14 @@ function cbResponse(torrent, r) {
 // }}}
 // {{{ function cbResponsePost(r)
 function cbResponsePost(r) {
-  logDebug("[Transmission] POST request completed, response=" + r.responseText);
+  logDebug("POST request completed, response=" + r.responseText);
   r_ = JSON.parse(r.responseText);
   if ("torrent-added" in r_.arguments) {
-    alert("Torrent added successfully as #" + r_.arguments["torrent-added"].id.toString());
+    logInfo("Torrent added successfully as #" + r_.arguments["torrent-added"].id.toString());
   } else if ("torrent-duplicate" in r_.arguments) {
-    alert("Duplicate torrent added successfully as #" + r_.arguments["torrent-duplicate"].id.toString());
+    logInfo("Duplicate torrent added successfully as #" + r_.arguments["torrent-duplicate"].id.toString());
   } else {
-    alert(r_.result);
+    logError(r_.result);
   }
 }
 // }}}
@@ -101,18 +104,42 @@ function JavaScriptIsFuckingWorthless(FuckYou) {
 // {{{ function logDebug(msg)
 function logDebug(msg) {
   if (debug) {
-    console.log(msg);
+    console.log("[Transmission] " + msg);
   }
 }
 // }}}
+// {{{ function logError(msg)
+function logError(msg) {
+  logDebug(msg);
+  alert("[Transmission] " + msg);
+}
+// }}}
+// {{{ function logInfo(msg)
+function logInfo(msg) {
+  logDebug(msg);
+  alert("[Transmission] " + msg);
+}
+// }}}
+// {{{ function matchHostDict(dict, host)
+function matchHostDict(dict, host) {
+  let hostDomain = host.split(".").slice(-2);
+  if (host in dict) {
+    return dict[host];
+  } else if (hostDomain in dict) {
+    return dict[hostDomain];
+  } else {
+    return dict[""];
+  }
+};
+// }}}
 
 function main() {
-  logDebug("[Transmission] Entry point");
+  logDebug("Entry point");
   for (let link of document.links) {
     if (link.href.match(/\.torrent(\?.*|)$/i)) {
       link.addEventListener("click", cbClick, true);
       link.style.opacity = linkOpacity;
-      logDebug("[Transmission] Registered " + link.href);
+      logDebug("Registered " + link.href);
     }
   }
 }
