@@ -8,7 +8,7 @@
 // @name          Add torrents to Deluge via Web API
 // @namespace     https://greasyfork.org/users/467795
 // @supportURL    https://github.com/lalbornoz/AddTorrentsDelugeTransmission
-// @version       1.3
+// @version       1.4
 // ==/UserScript==
 
 /*
@@ -16,9 +16,7 @@
  */
 let debug = false;
 let delugeDownloadDir = {
-  "subdomain.domain.tld": "/var/lib/deluge/downloads.subdomain",
-  "domain.tld":           "/var/lib/deluge/downloads.domain",
-  "":                     "/var/lib/deluge/downloads.Other"
+  "": "/var/lib/deluge/downloads"
 };
 let delugeHostId = "";
 let delugeHttpAuthPassword = ""; // (optional)
