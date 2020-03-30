@@ -1,12 +1,14 @@
 # AddTorrentsDeluge.js
 
-Add torrents to Deluge via Web API (requires patched deluge-web&lbrack;[1](https://raw.githubusercontent.com/lalbornoz/AddTorrentsDelugeTransmission/master/deluge-2.0.3%2BAddTorrentsDeluge.patch)&rbrack;
+Add torrents to Deluge via Web API (requires patched deluge-web&lbrack;[1](https://raw.githubusercontent.com/lalbornoz/AddTorrentsDelugeTransmission/master/deluge-2.0.3%2BAddTorrentsDeluge.patch)&rbrack;&lbrack;[2](https://dev.deluge-torrent.org/ticket/3366)&rbrack;&lbrack;[3](https://dev.deluge-torrent.org/ticket/3367)&rbrack;
 owing to missing functionality & unfixed bugs and ViolentMonkey due to 3rd-party
 cookies)  
   
 Eligible BitTorrent and/or Magnet links will have a clickable progress bar
 appended to them and may be queued on-click; refer to their tooltips for a
-detailed progress update.
+detailed progress update.  
+  
+![Screenshot](https://raw.githubusercontent.com/lalbornoz/AddTorrentsDelugeTransmission/master/AddTorrentsDelugeScreenShot.png "Screenshot")
   
 This script requires in-script configuration prior to usage. Consult the
 following table and set, at minimum, ``delugeDownloadDir``, ``delugeHostId``,
@@ -46,5 +48,7 @@ and ``transmissionRpcUrl``.
 # References
 
 * ``Wed, 25 Mar 2020 11:00:50 +0100 [1]`` <a href="https://raw.githubusercontent.com/lalbornoz/AddTorrentsDelugeTransmission/master/deluge-2.0.3%2BAddTorrentsDeluge.patch" id="r1">deluge-2.0.3+AddTorrentsDeluge.patch</a>  
+* ``Mon, 30 Mar 2020 14:02:23 +0200 [2]`` <a href="https://dev.deluge-torrent.org/ticket/3366" id="r2">#3366 (WebApi.add_torrents(): deferred RPC failure results are not propagated) – Deluge</a>  
+* ``Mon, 30 Mar 2020 14:02:30 +0200 [3]`` <a href="https://dev.deluge-torrent.org/ticket/3367" id="r3">#3367 (WebApi.add_torrents(): implement in-stream BitTorrent file uploading support) – Deluge</a>  
 
 [modeline]: # ( vim: set ff=dos tw=0: )
