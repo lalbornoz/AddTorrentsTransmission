@@ -8,7 +8,7 @@
 // @name          Add torrents to Deluge via Web API
 // @namespace     https://greasyfork.org/users/467795
 // @supportURL    https://github.com/lalbornoz/AddTorrentsDelugeTransmission
-// @version       1.7
+// @version       1.8
 // ==/UserScript==
 
 /*
@@ -194,14 +194,14 @@ function setLinkState(link, linkState, msg, error=false) {
 function cbClickMagnet(e) {
   let torrentUrl = this.href, torrentName_ = torrentUrl.match(/dn=([^&]+)/);
   e.stopPropagation(); e.preventDefault();
-  if (torrentName === null) {
+  if (torrentName_ === null) {
     setLinkState(e.target, 0, "Invalid Magnet URI (missing Display Name)", true);
   } else {
     torrentName = decodeURI2(torrentName_[1]);
     setLinkState(e.target, 2, "Logging into Deluge Web server...");
     delugeWebRequest("auth.login",
                      function (response, xhr_) {
-                       cbWebLoginResponse(response, null, delugeDownloadDir[""],
+                       cbWebLoginResponse(e.target, response, null, delugeDownloadDir[""],
                                           torrentName, torrentUrl, null, xhr_);
                      }, [delugeWebPassword]);
   };
